@@ -25,8 +25,8 @@ int main(int argc, char **argv)
         return 42;
     }
 
-    size_t solve_count = 0;
-    size_t collision_count = 0;
+    // size_t solve_count = 0;
+    // size_t collision_count = 0;
     chrono::duration<double> encoding_time;
 
     while (true)
@@ -43,10 +43,6 @@ int main(int argc, char **argv)
         solver.map = &problem.map;
         solver.agents = &problem.agents;
         solver.makespan = problem.time;
-        // if (!solver.simplify()) // maybe redundant
-        // {
-        //     cout << "UNSAT?" << endl;
-        // }
         if (solver.solve())
         {
             if (problem.check_result({})) // TODO
@@ -55,9 +51,9 @@ int main(int argc, char **argv)
             {
                 auto end = chrono::high_resolution_clock::now();
                 chrono::duration<double> diff = end - start;
-                cout << "Makespan: " << problem.time << "\t solve_ count " << solver.solve_cnt << endl;
-                cout << "Time: \t\t" << setprecision(4) << diff.count() << endl;
                 cout << "Encoding time: \t" << setprecision(4) << encoding_time.count() << endl;
+                cout << "Makespan: " << problem.time << "\t solve_count " << solver.solve_cnt << endl;
+                cout << "Time: \t\t" << setprecision(4) << diff.count() << endl;
                 // cout << "Collision time: \t" << setprecision(4) << solver.encoding_time.count() << endl;
 
                 // problem.print(result);

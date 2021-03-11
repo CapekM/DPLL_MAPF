@@ -90,7 +90,7 @@ CMAPF::CMAPF(string filename)
             }
             file.close();
             this->graph = graph;
-            cout << "file ,," << filename << "\" successfully loaded" << endl;
+            cout << "file \"" << filename << "\" successfully loaded" << endl;
         }
         else
         {
@@ -208,7 +208,7 @@ set<uint16_t> CMAPF::expand_2(set<uint16_t> &in)
     return result;
 }
 
-set<uint16_t> CMAPF::expand(set<uint16_t> in)
+set<uint16_t> CMAPF::expand(set<uint16_t> &in)
 {
     set<uint16_t> tmp = in;
     for (const auto &v : in)
@@ -380,6 +380,7 @@ void CMAPF::encode(Glucose::Solver &solver)
     map.map.clear(); // delete previous mapping
     vector<vector<set<uint16_t>>> TEGS(agents.size());
     uint16_t TEGS_count = 0;
+
     for (const auto &agent : agents)
     {
         // Time Expansion
@@ -461,16 +462,13 @@ void CMAPF::encode(Glucose::Solver &solver)
             {
                 // solver.add_clauses_mc(map.encode_v(t, a, disalowing_pairs(TEGS[a][t])));
                 solver.add_disalowing_pairs(map.encode_set(t, a, TEGS[a][t]));
-                // auto start_encoding = chrono::high_resolution_clock::now();
                 solver.add_clauses_mc(create_edges(t, a, TEGS[a][t - 1], TEGS[a][t]));
-                // auto end_encoding = chrono::high_resolution_clock::now();
-                // encoding_time = encoding_time + (end_encoding - start_encoding);
             }
         }
     }
 
+    // cout << map << endl;
     // result.resize(map.map.size());
-    // map.print();
     // result.print();
     // return result;
 }
@@ -480,7 +478,14 @@ vector<vector<int>> CMAPF::create_edges(size_t t, size_t a, set<uint16_t> &last_
     vector<vector<int>> result;
     for (const auto &element : last_slices)
     {
-        set<uint16_t> expanded = expand({element});
+        set<uint16_t> expanded = {element};
+        for (size_t i = 0; i < graph.size(); ++i)
+        {
+            if (graph[element - 1][i])
+            {
+                expanded.insert(i + 1);
+            }
+        }
         vector<int> intersection;
         set_intersection(slices.begin(), slices.end(),
                          expanded.begin(), expanded.end(),

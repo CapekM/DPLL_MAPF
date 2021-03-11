@@ -787,11 +787,11 @@ void Solver::analyze(CRef confl, vec<Lit> &out_learnt, vec<Lit> &selectors, int 
 
     // Simplify conflict clause:
     //
-    int i, j;
 
     for (int i = 0; i < selectors.size(); i++)
         out_learnt.push(selectors[i]);
 
+    int i, j;
     out_learnt.copyTo(analyze_toclear);
     if (ccmin_mode == 2)
     {
@@ -1501,7 +1501,7 @@ lbool Solver::search(int nof_conflicts)
     bool aDecisionWasMade = false;
 
     starts++;
-    size_t cnt = 2 * nVars() / 3;
+    size_t cnt = 2* nVars() / 3;
     // cout << "nVars " << nVars() << endl;
     for (;;)
     {

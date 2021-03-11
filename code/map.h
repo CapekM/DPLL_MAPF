@@ -135,15 +135,17 @@ public:
         return result;
     }
 
-    void print()
+    friend ostream& operator<<(ostream& os, const encode_MAP& m)
     {
-        cout << "Printing MAP:\n";
-        for (const auto &a : map)
+        os << "Printing MAP:\n";
+        for (const auto &a : m.map)
         {
-            cout << "[" << a.time << "," << a.agent << "," << a.vertex << "]  ";
+            os << "[" << a.time << "," << a.agent << "," << a.vertex << "]  ";
         }
-        cout << endl;
+        return os;
     }
+
+    // print mappping of specified agnet
     void print(uint16_t ag)
     {
         for (const auto &a : map)

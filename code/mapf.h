@@ -16,7 +16,6 @@ private:
     vector<vector<int>> create_edges(size_t, size_t, set<uint16_t> &, set<uint16_t> &);
 
 public:
-    chrono::duration<double> encoding_time;
     vector<vector<bool>> graph;
     vector<pair<uint16_t, uint16_t>> agents;
     encode_MAP map;
@@ -33,7 +32,7 @@ public:
     void encode(Glucose::Solver &);
     bool check_result(const vector<bool> &);
     void print(const vector<bool> &);        // print SAT solver result
-    set<uint16_t> expand(set<uint16_t>);     // expand for encoding
+    set<uint16_t> expand(set<uint16_t> &);     // expand for encoding
     set<uint16_t> expand_2(set<uint16_t> &); // expand for shortest path
     vector<vector<int>> check_collisions(const vector<bool> &);
 };
