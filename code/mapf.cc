@@ -377,8 +377,8 @@ void CMAPF::print(const vector<bool> &result)
 
 void CMAPF::encode(Glucose::Solver &solver)
 {
-    map.map.clear(); // delete previous mapping
-    vector<vector<set<uint16_t>>> TEGS(agents.size());
+    map.map.clear(); // delete previous mapping if reapeted encoding
+    vector<vector<set<uint16_t>>> TEGS(agents.size()); // TEGS[agent][time][vertex]
     uint16_t TEGS_count = 0;
 
     for (const auto &agent : agents)
@@ -441,6 +441,26 @@ void CMAPF::encode(Glucose::Solver &solver)
     // }
     // cout << "=========================\n";
 
+
+        /* Finding chokepoints TEGs */
+    for (int a = 0; a < TEGS.size(); a++)
+    {
+        for (int t = 1; t < TEGS[a].size()-1; t++)
+        {
+            if (TEGS[a][t].size() < 2){ // delete this vertex from other TEGs
+                for (int a_tmp = 0; a_tmp < TEGS.size(); a_tmp++){
+                    if(a != a_tmp)
+                        TEGS[a_tmp][t].erase(*TEGS[a][t].begin());
+                        
+                }
+
+            }
+            // if (TEGS[a][t].size() == 2){ // we found chokepoint in TEG -> we could create collisions here
+            // }
+        }
+    }
+
+
     // size_t literals_size = 0;
     for (size_t t = 0; t < time; t++)
     {
@@ -455,8 +475,7 @@ void CMAPF::encode(Glucose::Solver &solver)
             /* Create, Encode and Add rules */
             if (TEGS[a][t].size() == 1) // special case if there is just one vertex in time slice
             {
-                vector<int> one_vertex(TEGS[a][t].begin(), TEGS[a][t].end());
-                solver.add_clauses_mc({map.encode(t, a, one_vertex)});
+                solver.add_clauses_mc({map.encode_one(t, a, *TEGS[a][t].begin())});
             }
             else
             {

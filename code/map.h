@@ -96,7 +96,8 @@ public:
         }
         return result;
     }
-    vector<int> encode(uint16_t t, uint16_t a, const vector<int> &in, bool verb = false) // delete verb
+
+    vector<int> encode(uint16_t t, uint16_t a, const vector<int> &in, bool verb = false) // TODO delete verb
     {
         vector<int> result;
         for (const auto &i : in)
@@ -131,6 +132,37 @@ public:
                 if (!jump)
                     jump = 1;
             }
+        }
+        return result;
+    }
+    
+    vector<int> encode_one(uint16_t t, uint16_t a, const int i)
+    {
+        vector<int> result;
+        uint16_t v = abs(i);
+        encode_unit tmp = {t, a, v};
+        size_t index = map.size() / 2;
+        size_t jump = map.size() / 4;
+        // my map is created by order Time, Agent, Vertex
+        while (true)
+        {
+            if (map[index] == tmp)
+            {
+                result.push_back((i / v) * (index + 1));
+                break;
+            }
+            else if (map[index] < tmp)
+            {
+                index += jump;
+                jump /= 2;
+            }
+            else
+            {
+                index -= jump;
+                jump /= 2;
+            }
+            if (!jump)
+                jump = 1;
         }
         return result;
     }
