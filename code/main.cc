@@ -25,8 +25,6 @@ int main(int argc, char **argv)
         return 42;
     }
 
-    // size_t solve_count = 0;
-    // size_t collision_count = 0;
     chrono::duration<double> encoding_time;
 
     while (true)
@@ -45,8 +43,10 @@ int main(int argc, char **argv)
         solver.makespan = problem.time;
         if (solver.solve())
         {
-            if (problem.check_result({})) // TODO
-                cout << "Checking failed!\n";
+            if (problem.check_result(solver.my_model)){
+                cerr << "Checking failed!\n";
+                exit(42);
+            }
             else
             {
                 auto end = chrono::high_resolution_clock::now();
@@ -56,7 +56,7 @@ int main(int argc, char **argv)
                 cout << "Time: \t\t" << setprecision(4) << diff.count() << endl;
                 // cout << "Collision time: \t" << setprecision(4) << solver.encoding_time.count() << endl;
 
-                // problem.print(result);
+                // problem.print(solver.my_model);
             }
 
             break;

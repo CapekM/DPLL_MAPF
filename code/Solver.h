@@ -114,7 +114,6 @@ namespace Glucose
         //
         Solver();
         Solver(const Solver &s);
-
         virtual ~Solver();
 
         encode_MAP *map;
@@ -122,6 +121,7 @@ namespace Glucose
         uint16_t makespan = 0;
         vector<vector<int>> collisions;
         uint16_t solve_cnt = 0;
+        vector<bool> my_model;
 
         void check_collisions(int size) // assuming values are in time order
         {
@@ -197,20 +197,26 @@ namespace Glucose
                         while (tmp_agent < agents->size())
                         {
                             for (size_t q = 0; q < decoded[tmp_agent].size() - 1; q++)
-                                if ((decoded[a][q].first + 1 == decoded[a][q + 1].first) && decoded[a][p].second == decoded[tmp_agent][q + 1].second && decoded[a][p + 1].second == decoded[tmp_agent][q].second && decoded[a][p].first == decoded[tmp_agent][q].first)
+                                if ( t == decoded[tmp_agent][q].first
+                                    && (decoded[tmp_agent][q].first + 1 == decoded[tmp_agent][q + 1].first)
+                                    && decoded[a][p].second == decoded[tmp_agent][q + 1].second && decoded[a][p + 1].second == decoded[tmp_agent][q].second)
                                 {
                                     vector<int> tmp;
                                     if (t < makespan - 1)
                                     {
-                                        // cout << "a " << a << " t " << t << " tmp " << tmp_agent << " values " << decoded[a][p].second << " " << decoded[tmp_agent][q + 1].second << endl;
+                                        // cout << "a " << a << " t " << t << " tmp " << tmp_agent << endl;
+                                        // cout << "p " << p << " q " << q << endl;
+                                        // cout << "values " << decoded[a][p].second << " " << decoded[tmp_agent][q + 1].second << endl;
+                                        // cout << "values " << decoded[a][p+1].second << " " << decoded[tmp_agent][q].second << endl;
                                         // cout << "Creating col [" << map->encode(t, a, {-decoded[a][p].second})[0] << ", " << map->encode(t, tmp_agent, {-decoded[tmp_agent][q].second})[0] << "]\n";
                                         // cout << "Creating col [" << map->encode(t + 1, a, {-decoded[a][p + 1].second})[0] << ", " << map->encode(t + 1, tmp_agent, {-decoded[tmp_agent][q + 1].second})[0] << "]\n";
+
                                         tmp = {map->encode(t, a, {-decoded[a][p].second})[0],
                                                map->encode(t, tmp_agent, {-decoded[tmp_agent][q].second})[0],
                                                map->encode(t + 1, a, {-decoded[a][p + 1].second})[0],
                                                map->encode(t + 1, tmp_agent, {-decoded[tmp_agent][q + 1].second})[0]};
                                     }
-                                    else // if last time forbid only last pair
+                                    else // if last time forbid only last pair (destinations are not encoded)
                                     {
                                         tmp = {map->encode(t, a, {-decoded[a][p].second})[0], map->encode(t, tmp_agent, {-decoded[tmp_agent][q].second})[0]};
                                     }
@@ -225,6 +231,7 @@ namespace Glucose
 
         void add_clauses_mc(const vector<vector<int>> &v) // by Martin Capek
         {
+
             for (const auto &ar : v)
             {
                 vec<Lit> lits;
@@ -234,14 +241,15 @@ namespace Glucose
                     // if (a == 0)
                     //     break;
                     int var = abs(a) - 1;
-                    lits.push((a > 0) ? mkLit(var) : ~mkLit(var));
+                    lits.push(mkLit(var, (a <= 0)));
                 }
                 this->addClause(lits);
                 // cout << endl;
             }
         }
 
-        void add_disalowing_pairs(const vector<int> &v) // by Martin Capek
+        // Will create (¬x ∨ ¬y) for every pair from vector
+        void add_disalowing_pairs(const vector<int> &v)
         {
             // for (vector<int>::iterator it = begin(slice);; ++it)
             for (size_t it = 0; it < v.size(); it++)
@@ -264,7 +272,8 @@ namespace Glucose
                 // cout << "=======================\n";
             }
         }
-        /**
+
+     /**
      * Clone function
      */
         virtual Clone *clone() const

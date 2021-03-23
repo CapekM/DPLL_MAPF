@@ -1501,13 +1501,13 @@ lbool Solver::search(int nof_conflicts)
     bool aDecisionWasMade = false;
 
     starts++;
-    size_t cnt = 2* nVars() / 3;
+    size_t cnt = nVars() / 10;
     // cout << "nVars " << nVars() << endl;
     for (;;)
     {
         if (trail.size() > cnt) // (nVars() * cnt / 3))
         {
-            cnt += nVars() / 3;
+            cnt += nVars() / 10;
             check_collisions(trail.size());
             if (!collisions.empty())
             {
@@ -1925,9 +1925,19 @@ lbool Solver::solve_(bool do_simp, bool turn_off_simp) // Parameters are useless
             return l_Reset;
         }
         // Extend & copy model:
-        model.growTo(nVars());
-        for (int i = 0; i < nVars(); i++)
-            model[i] = value(i);
+        // model.growTo(nVars());
+        // for (int i = 0; i < nVars(); i++)
+        //     model[i] = value(i);
+        for (int i = 0; i < nVars(); i++) {
+            if (value(i) == l_False)
+                my_model.push_back(false);
+            else // if (value(i) == l_False)
+                my_model.push_back(true);
+            // else {
+            //     cerr << "undefined model on i = " << i << endl;
+            //     exit(42);
+            // }
+        }
     }
     else if (status == l_False && conflict.size() == 0)
         ok = false;
