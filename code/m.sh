@@ -1,15 +1,19 @@
 #!/bin/bash
 
-for x in 2 3 4 5
+for n in 3 5 # 10
 do
-        out="samples/grids/dpll_"$x".txt";
+        out="output/maze/dpll_mapf_"$n".csv";
+        rm $out;
         touch $out;
         for i in 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 18 20 22 24 26 28 30
         do
-                # echo "Runing instance "$i".cpf"
-                inst="samples/maze/maze-32-32-2_a"$i".cpf";
-                ./mapf24 $inst >> $out;
+                echo -n "maze-32-32-2_a"$i >> $out
+                for x in {1..6}
+                do
+                        # echo "Runing instance "$i".cpf"
+                        inst="samples/maze/maze-32-32-2_a"$i".cpf";
+                        ./mapf $inst $n >> $out;
+                done
+                echo >> $out
         done
-        cat $out | grep Time;
-        rm $out;
 done

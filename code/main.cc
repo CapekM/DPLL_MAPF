@@ -12,12 +12,13 @@ using namespace Glucose;
 int main(int argc, char **argv)
 {
     // load problem from file - dummy problem is provided if there's no specified file
-    CMAPF problem = CMAPF((argc > 1) ? argv[1] : "");
+    string filename = (argc > 1) ? argv[1] : "";
+    CMAPF problem = CMAPF(filename);
     // start measuring time
     auto start = chrono::high_resolution_clock::now();
     // get initial makespan (total time of plan)
     problem.time = problem.get_shortest_path();
-    cout << "Initial makespan: " << problem.time << endl;
+    // cout << "Initial makespan: " << problem.time << endl;
 
     if (problem.time < 1)
     {
@@ -38,6 +39,7 @@ int main(int argc, char **argv)
         solver.setIncrementalMode();
         // solver.s_Glucose_timeout = m_timeout;
         solver.verbosity = -1;
+        solver.checking_parameter = (argc > 2) ? argv[2] : 3;
         solver.map = &problem.map;
         solver.agents = &problem.agents;
         solver.makespan = problem.time;
@@ -51,9 +53,15 @@ int main(int argc, char **argv)
             {
                 auto end = chrono::high_resolution_clock::now();
                 chrono::duration<double> diff = end - start;
-                cout << "Encoding time: \t" << setprecision(4) << encoding_time.count() << endl;
-                cout << "Makespan: " << problem.time << "\t solve_count " << solver.solve_cnt << endl;
-                cout << "Time: \t\t" << setprecision(4) << diff.count() << endl;
+
+                    /* Measurement output*/
+                cout << ", " << setprecision(4) << diff.count(); // filename.substr(filename.rfind("/") + 1) << 
+
+                    /* Console output */
+                // cout << "Makespan: " << problem.time << "\t solve_count " << solver.solve_cnt << endl;
+                // cout << "Time: \t\t" << setprecision(4) << diff.count() << endl;
+                // cout << "Encoding time: \t" << setprecision(4) << encoding_time.count() << endl;
+                // cout << "Checking time: \t" << setprecision(4) << solver.check_time.count() << endl;
                 // cout << "Collision time: \t" << setprecision(4) << solver.encoding_time.count() << endl;
 
                 // problem.print(solver.my_model);

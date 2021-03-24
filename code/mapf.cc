@@ -90,7 +90,7 @@ CMAPF::CMAPF(string filename)
             }
             file.close();
             this->graph = graph;
-            cout << "file \"" << filename << "\" successfully loaded" << endl;
+            // cout << "file \"" << filename << "\" successfully loaded" << endl;
         }
         else
         {

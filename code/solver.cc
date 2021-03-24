@@ -1501,13 +1501,13 @@ lbool Solver::search(int nof_conflicts)
     bool aDecisionWasMade = false;
 
     starts++;
-    size_t cnt = nVars() / 10;
+    size_t cnt = nVars() / checking_parameter;
     // cout << "nVars " << nVars() << endl;
     for (;;)
     {
         if (trail.size() > cnt) // (nVars() * cnt / 3))
         {
-            cnt += nVars() / 10;
+            cnt += nVars() / checking_parameter;
             check_collisions(trail.size());
             if (!collisions.empty())
             {

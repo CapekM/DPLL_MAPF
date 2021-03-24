@@ -116,15 +116,19 @@ namespace Glucose
         Solver(const Solver &s);
         virtual ~Solver();
 
+        // from here by Martin Capek
         encode_MAP *map;
         vector<pair<uint16_t, uint16_t>> *agents;
         uint16_t makespan = 0;
+        uint16_t checking_parameter = 3;
         vector<vector<int>> collisions;
         uint16_t solve_cnt = 0;
         vector<bool> my_model;
+        chrono::duration<double> check_time;
 
         void check_collisions(int size) // assuming values are in time order
         {
+            auto start = chrono::high_resolution_clock::now();
             /* decoding */
             vector<vector<pair<uint16_t, uint16_t>>> decoded(agents->size());
             for (int i = 0; i < size; i++) // TODO (size < max) ? size : max // todo max = max var without help var
@@ -227,9 +231,11 @@ namespace Glucose
                     }
                 }
             }
+            auto end = chrono::high_resolution_clock::now();
+            check_time = check_time + (end - start);
         }
 
-        void add_clauses_mc(const vector<vector<int>> &v) // by Martin Capek
+        void add_clauses_mc(const vector<vector<int>> &v)
         {
 
             for (const auto &ar : v)
@@ -272,6 +278,8 @@ namespace Glucose
                 // cout << "=======================\n";
             }
         }
+
+        // up here by Martin Capek
 
      /**
      * Clone function
