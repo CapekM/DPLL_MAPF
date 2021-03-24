@@ -1,6 +1,6 @@
 #!/bin/bash
 
-for n in 3 5 # 10
+for n in 3 5 10
 do
         out="output/maze/dpll_mapf_"$n".csv";
         rm $out;
@@ -12,7 +12,7 @@ do
                 do
                         # echo "Runing instance "$i".cpf"
                         inst="samples/maze/maze-32-32-2_a"$i".cpf";
-                        ./mapf $inst $n >> $out;
+                        ./mapf $inst $n 1 >> $out;
                 done
                 echo >> $out
         done

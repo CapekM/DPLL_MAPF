@@ -23,7 +23,7 @@ public:
 
     CMAPF(){};
     CMAPF(vector<vector<bool>> in) : graph(in) {}
-    CMAPF(string);
+    CMAPF(string, bool);
 
     uint16_t get_shortest_path(); // get max of shortest paths
     uint16_t shortest_path(uint16_t, uint16_t);

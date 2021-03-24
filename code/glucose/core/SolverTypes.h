@@ -132,7 +132,7 @@ namespace Glucose
 #define l_True (Glucose::lbool((uint8_t)0)) // gcc does not do constant propagation if these are real constants.
 #define l_False (Glucose::lbool((uint8_t)1))
 #define l_Undef (Glucose::lbool((uint8_t)2))
-#define l_Reset (Glucose::lbool((uint8_t)3)) // new clause by MC
+#define l_Reset (Glucose::lbool((uint8_t)3)) // new bool value by MC
 
     class lbool
     {

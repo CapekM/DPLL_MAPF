@@ -11,7 +11,7 @@
 using namespace Glucose;
 using namespace std;
 
-CMAPF::CMAPF(string filename)
+CMAPF::CMAPF(string filename, bool testing)
 {
     size_t default_length = 50;
     if (filename != "")
@@ -90,7 +90,8 @@ CMAPF::CMAPF(string filename)
             }
             file.close();
             this->graph = graph;
-            // cout << "file \"" << filename << "\" successfully loaded" << endl;
+            if (! testing)
+                cout << "file \"" << filename << "\" successfully loaded" << endl;
         }
         else
         {
