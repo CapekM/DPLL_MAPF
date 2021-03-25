@@ -322,7 +322,7 @@ bool CMAPF::check_result(const vector<bool> &result)
         {
             if (!graph[decoded[a][t] - 1][decoded[a][t - 1] - 1]) // graph consistency
             {
-                cout << "consistency " << decoded[a][t] - 1 << " " << decoded[a][t - 1] - 1 << "\n";
+                cerr << "consistency " << decoded[a][t] - 1 << " " << decoded[a][t - 1] - 1 << "\n";
                 return true;
             }
             size_t tmp_agent = a + 1;
@@ -444,12 +444,12 @@ void CMAPF::encode(Glucose::Solver &solver)
 
 
         /* Finding chokepoints TEGs */
-    for (int a = 0; a < TEGS.size(); a++)
+    for (size_t a = 0; a < TEGS.size(); a++)
     {
-        for (int t = 1; t < TEGS[a].size()-1; t++)
+        for (size_t t = 1; t < TEGS[a].size()-1; t++)
         {
             if (TEGS[a][t].size() < 2){ // delete this vertex from other TEGs
-                for (int a_tmp = 0; a_tmp < TEGS.size(); a_tmp++){
+                for (size_t a_tmp = 0; a_tmp < TEGS.size(); a_tmp++){
                     if(a != a_tmp)
                         TEGS[a_tmp][t].erase(*TEGS[a][t].begin());
                         
