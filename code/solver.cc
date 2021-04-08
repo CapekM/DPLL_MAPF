@@ -1840,45 +1840,6 @@ lbool Solver::solve_(bool do_simp, bool turn_off_simp) // Parameters are useless
     solves++;
 
     lbool status = l_Undef;
-    if (!incremental && verbosity >= 1)
-    {
-        printf("c ========================================[ MAGIC CONSTANTS ]==============================================\n");
-        printf("c | Constants are supposed to work well together :-)                                                      |\n");
-        printf("c | however, if you find better choices, please let us known...                                           |\n");
-        printf("c |-------------------------------------------------------------------------------------------------------|\n");
-        if (adaptStrategies)
-        {
-            printf("c | Adapt dynamically the solver after 100000 conflicts (restarts, reduction strategies...)               |\n");
-            printf("c |-------------------------------------------------------------------------------------------------------|\n");
-        }
-        printf("c |                                |                                |                                     |\n");
-        printf("c | - Restarts:                    | - Reduce Clause DB:            | - Minimize Asserting:               |\n");
-        if (chanseokStrategy)
-        {
-            printf("c |   * LBD Queue    : %6d      |     chanseok Strategy          |    * size < %3d                     |\n", lbdQueue.maxSize(),
-                   lbSizeMinimizingClause);
-            printf("c |   * Trail  Queue : %6d      |   * learnts size     : %6d  |    * lbd  < %3d                     |\n", trailQueue.maxSize(),
-                   firstReduceDB, lbLBDMinimizingClause);
-            printf("c |   * K            : %6.2f      |   * Bound LBD   : %6d       |                                     |\n", K, coLBDBound);
-            printf("c |   * R            : %6.2f      |   * Protected :  (lbd)< %2d     |                                     |\n", R, lbLBDFrozenClause);
-        }
-        else
-        {
-            printf("c |   * LBD Queue    : %6d      |   * First     : %6d         |    * size < %3d                     |\n", lbdQueue.maxSize(),
-                   nbclausesbeforereduce, lbSizeMinimizingClause);
-            printf("c |   * Trail  Queue : %6d      |   * Inc       : %6d         |    * lbd  < %3d                     |\n", trailQueue.maxSize(), incReduceDB,
-                   lbLBDMinimizingClause);
-            printf("c |   * K            : %6.2f      |   * Special   : %6d         |                                     |\n", K, specialIncReduceDB);
-            printf("c |   * R            : %6.2f      |   * Protected :  (lbd)< %2d     |                                     |\n", R, lbLBDFrozenClause);
-        }
-        printf("c |                                |                                |                                     |\n");
-        printf("c ==================================[ Search Statistics (every %6d conflicts) ]=========================\n", verbEveryConflicts);
-        printf("c |                                                                                                       |\n");
-
-        printf("c |          RESTARTS           |          ORIGINAL         |              LEARNT              | Progress |\n");
-        printf("c |       NB   Blocked  Avg Cfc |    Vars  Clauses Literals |   Red   Learnts    LBD2  Removed |          |\n");
-        printf("c =========================================================================================================\n");
-    }
 
     // Search:
     int curr_restarts = 0;
@@ -1895,27 +1856,7 @@ lbool Solver::solve_(bool do_simp, bool turn_off_simp) // Parameters are useless
             break;
         curr_restarts++;
     }
-
-    if (!incremental && verbosity >= 1)
-        printf("c =========================================================================================================\n");
-
-    if (certifiedUNSAT)
-    { // Want certified output
-        if (status == l_False)
-        {
-            if (vbyte)
-            {
-                write_char('a');
-                write_lit(0);
-            }
-            else
-            {
-                fprintf(certifiedOutput, "0\n");
-            }
-        }
-        fclose(certifiedOutput);
-    }
-
+    
     if (status == l_True)
     {
         check_collisions(nVars());

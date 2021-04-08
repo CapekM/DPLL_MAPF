@@ -780,6 +780,7 @@ namespace Glucose
     inline bool Solver::solve()
     {
         lbool status = l_Reset;
+        // checking_parameter = 8;
         while (status == l_Reset)
         {
             add_clauses_mc(collisions);
@@ -788,6 +789,7 @@ namespace Glucose
             assumptions.clear();
             solve_cnt++;
             status = solve_();
+            // checking_parameter = (checking_parameter == 2) ? 2 : checking_parameter - 1;
         }
         return status == l_True;
     }
