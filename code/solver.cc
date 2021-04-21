@@ -1501,12 +1501,12 @@ lbool Solver::search(int nof_conflicts)
     bool aDecisionWasMade = false;
 
     starts++;
-    size_t cnt = 100;
+    size_t cnt = nVars() / checking_parameter + 1;
     for (;;)
     {
-        if (trail.size() > cnt) // (nVars() * cnt / 3))
+        if (trail.size() > cnt)
         {
-            cnt *= 2;
+            cnt += nVars() / checking_parameter;
             check_collisions(trail.size());
             if (!collisions.empty())
             {
@@ -1855,7 +1855,7 @@ lbool Solver::solve_(bool do_simp, bool turn_off_simp) // Parameters are useless
             break;
         curr_restarts++;
     }
-    
+
     if (status == l_True)
     {
         check_collisions(nVars());
@@ -1868,7 +1868,8 @@ lbool Solver::solve_(bool do_simp, bool turn_off_simp) // Parameters are useless
         // model.growTo(nVars());
         // for (int i = 0; i < nVars(); i++)
         //     model[i] = value(i);
-        for (int i = 0; i < nVars(); i++) {
+        for (int i = 0; i < nVars(); i++)
+        {
             if (value(i) == l_False)
                 my_model.push_back(false);
             else // if (value(i) == l_False)

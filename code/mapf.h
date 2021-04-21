@@ -4,7 +4,7 @@
 #include <vector>
 #include <set>
 
-// #include "Solver.h"
+#include "Solver.h"
 #include "map.h"
 
 using namespace std;
@@ -32,7 +32,7 @@ public:
     void encode(Glucose::Solver &);
     bool check_result(const vector<bool> &);
     void print(const vector<bool> &);        // print SAT solver result
-    set<uint16_t> expand(set<uint16_t> &);     // expand for encoding
+    set<uint16_t> expand(set<uint16_t> &);   // expand for encoding
     set<uint16_t> expand_2(set<uint16_t> &); // expand for shortest path
     vector<vector<int>> check_collisions(const vector<bool> &);
 };

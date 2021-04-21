@@ -66,7 +66,6 @@ using namespace std;
 #include "glucose/core/SolverStats.h"
 
 #include "map.h"
-// #include "loader.h"
 
 namespace Glucose
 {
@@ -124,11 +123,11 @@ namespace Glucose
         vector<vector<int>> collisions;
         uint16_t solve_cnt = 0;
         vector<bool> my_model;
-        chrono::duration<double> check_time;
+        // chrono::duration<double> check_time;
 
         void check_collisions(int size) // assuming values are in time order
         {
-            auto start = chrono::high_resolution_clock::now();
+            // auto start = chrono::high_resolution_clock::now();
             /* decoding */
             vector<vector<pair<uint16_t, uint16_t>>> decoded(agents->size());
             for (int i = 0; i < size; i++) // TODO (size < max) ? size : max // todo max = max var without help var
@@ -201,9 +200,7 @@ namespace Glucose
                         while (tmp_agent < agents->size())
                         {
                             for (size_t q = 0; q < decoded[tmp_agent].size() - 1; q++)
-                                if ( t == decoded[tmp_agent][q].first
-                                    && (decoded[tmp_agent][q].first + 1 == decoded[tmp_agent][q + 1].first)
-                                    && decoded[a][p].second == decoded[tmp_agent][q + 1].second && decoded[a][p + 1].second == decoded[tmp_agent][q].second)
+                                if (t == decoded[tmp_agent][q].first && (decoded[tmp_agent][q].first + 1 == decoded[tmp_agent][q + 1].first) && decoded[a][p].second == decoded[tmp_agent][q + 1].second && decoded[a][p + 1].second == decoded[tmp_agent][q].second)
                                 {
                                     vector<int> tmp;
                                     if (t < makespan - 1)
@@ -231,8 +228,8 @@ namespace Glucose
                     }
                 }
             }
-            auto end = chrono::high_resolution_clock::now();
-            check_time = check_time + (end - start);
+            // auto end = chrono::high_resolution_clock::now();
+            // check_time = check_time + (end - start);
         }
 
         void add_clauses_mc(const vector<vector<int>> &v)
@@ -281,7 +278,7 @@ namespace Glucose
 
         // up here by Martin Capek
 
-     /**
+        /**
      * Clone function
      */
         virtual Clone *clone() const
@@ -780,7 +777,6 @@ namespace Glucose
     inline bool Solver::solve()
     {
         lbool status = l_Reset;
-        // checking_parameter = 8;
         while (status == l_Reset)
         {
             add_clauses_mc(collisions);
@@ -789,7 +785,6 @@ namespace Glucose
             assumptions.clear();
             solve_cnt++;
             status = solve_();
-            // checking_parameter = (checking_parameter == 2) ? 2 : checking_parameter - 1;
         }
         return status == l_True;
     }

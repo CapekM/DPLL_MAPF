@@ -2,7 +2,6 @@
 #include <ctime>
 #include <iomanip>
 
-#include "loader.h"
 #include "mapf.h"
 #include "Solver.h"
 
@@ -19,7 +18,6 @@ int main(int argc, char **argv)
     auto start = chrono::high_resolution_clock::now();
     // get initial makespan (total time of plan)
     problem.time = problem.get_shortest_path();
-    // cout << "Initial makespan: " << problem.time << endl;
 
     if (problem.time < 1)
     {
@@ -46,37 +44,34 @@ int main(int argc, char **argv)
         solver.makespan = problem.time;
         if (solver.solve())
         {
-            if (problem.check_result(solver.my_model)){
+            auto end = chrono::high_resolution_clock::now();
+            chrono::duration<double> diff = end - start;
+            if (problem.check_result(solver.my_model))
+            {
                 cerr << "Checking failed!\n";
                 exit(42);
             }
             else
             {
-                auto end = chrono::high_resolution_clock::now();
-                chrono::duration<double> diff = end - start;
 
-                    /* Measurement output*/
-                if (testing) {
-                    cout << ", " << setprecision(4) << diff.count(); // filename.substr(filename.rfind("/") + 1) << 
+                /* Measurement output*/
+                if (testing)
+                {
+                    cout << ", " << setprecision(4) << diff.count();
                 }
-                else {
+                else
+                {
                     /* Console output */
-                cout << "Makespan: " << problem.time << "\t solve_count " << solver.solve_cnt << endl;
-                cout << "Time: \t\t" << setprecision(4) << diff.count() << endl;
-                cout << "Encoding time: \t" << setprecision(4) << encoding_time.count() << endl;
-                cout << "Checking time: \t" << setprecision(4) << solver.check_time.count() << endl;
-
-                // problem.print(solver.my_model);
+                    cout << "Makespan: " << problem.time << "\t solve_count " << solver.solve_cnt << endl;
+                    cout << "Time: \t\t" << setprecision(4) << diff.count() << endl;
+                    cout << "Non-Encoding time: \t" << setprecision(4) << (diff - encoding_time).count() << endl;
+                    // problem.print(solver.my_model);
                 }
             }
 
             break;
         }
         problem.time++;
-        // cout << "next time " << problem.time << endl;
-        // auto end = chrono::high_resolution_clock::now();
-        // chrono::duration<double> diff = end - start;
-        // cout << "\nTime:  " << setprecision(4) << diff.count() << endl;
     }
 
     return 0;
