@@ -11,7 +11,7 @@
 using namespace Glucose;
 using namespace std;
 
-CMAPF::CMAPF(string filename, bool testing)
+MAPF_handler::MAPF_handler(string filename, bool testing)
 {
     size_t default_length = 50;
     if (filename != "")
@@ -137,12 +137,12 @@ CMAPF::CMAPF(string filename, bool testing)
     }
 }
 
-void CMAPF::add_agent(uint16_t from, uint16_t to)
+void MAPF_handler::add_agent(uint16_t from, uint16_t to)
 {
     agents.push_back(make_pair(from, to));
 }
 
-uint16_t CMAPF::get_shortest_path()
+uint16_t MAPF_handler::get_shortest_path()
 {
     uint16_t max = 0;
     for (const auto &agent : agents)
@@ -153,7 +153,7 @@ uint16_t CMAPF::get_shortest_path()
     return max;
 }
 
-uint16_t CMAPF::shortest_path(uint16_t a, uint16_t b)
+uint16_t MAPF_handler::shortest_path(uint16_t a, uint16_t b)
 {
     if (a == b)
     {
@@ -193,7 +193,7 @@ uint16_t CMAPF::shortest_path(uint16_t a, uint16_t b)
     return time;
 }
 
-set<uint16_t> CMAPF::expand_2(set<uint16_t> &in)
+set<uint16_t> MAPF_handler::expand_2(set<uint16_t> &in)
 {
     set<uint16_t> result;
     for (const auto &v : in)
@@ -209,7 +209,7 @@ set<uint16_t> CMAPF::expand_2(set<uint16_t> &in)
     return result;
 }
 
-set<uint16_t> CMAPF::expand(set<uint16_t> &in)
+set<uint16_t> MAPF_handler::expand(set<uint16_t> &in)
 {
     set<uint16_t> tmp = in;
     for (const auto &v : in)
@@ -225,7 +225,7 @@ set<uint16_t> CMAPF::expand(set<uint16_t> &in)
     return tmp;
 }
 
-vector<vector<int>> CMAPF::check_collisions(const vector<bool> &solver_result)
+vector<vector<int>> MAPF_handler::check_collisions(const vector<bool> &solver_result)
 {
     /* decoding */
     vector<vector<uint16_t>> decoded(agents.size());
@@ -298,7 +298,7 @@ vector<vector<int>> CMAPF::check_collisions(const vector<bool> &solver_result)
     return collisions;
 }
 
-bool CMAPF::check_result(const vector<bool> &result)
+bool MAPF_handler::check_result(const vector<bool> &result)
 {
     vector<vector<uint16_t>> decoded(agents.size());
 
@@ -341,7 +341,7 @@ bool CMAPF::check_result(const vector<bool> &result)
     return false;
 }
 
-void CMAPF::print(const vector<bool> &result)
+void MAPF_handler::print(const vector<bool> &result)
 {
     vector<vector<uint16_t>> decoded(agents.size());
     for (size_t i = 0; i < result.size(); i++)
@@ -365,7 +365,7 @@ void CMAPF::print(const vector<bool> &result)
     }
 }
 
-void CMAPF::encode(Glucose::Solver &solver)
+void MAPF_handler::encode(Glucose::Solver &solver)
 {
     map.map.clear();                                   // delete previous mapping if reapeted encoding
     vector<vector<set<uint16_t>>> TEGS(agents.size()); // TEGS[agent][time][vertex]
@@ -435,18 +435,18 @@ void CMAPF::encode(Glucose::Solver &solver)
             /* Create, Encode and Add rules */
             if (TEGS[a][t].size() == 1) // special case if there is just one vertex in time slice
             {
-                solver.add_clauses_mc({map.encode_one(t, a, *TEGS[a][t].begin())});
+                solver.add_clauses({map.encode_one(t, a, *TEGS[a][t].begin())});
             }
             else
             {
-                solver.add_disalowing_pairs(map.encode_set(t, a, TEGS[a][t]));
-                solver.add_clauses_mc(create_edges(t, a, TEGS[a][t - 1], TEGS[a][t]));
+                solver.add_disallowing_pairs(map.encode_set(t, a, TEGS[a][t]));
+                solver.add_clauses(create_edges(t, a, TEGS[a][t - 1], TEGS[a][t]));
             }
         }
     }
 }
 
-vector<vector<int>> CMAPF::create_edges(size_t t, size_t a, set<uint16_t> &last_slices, set<uint16_t> &slices)
+vector<vector<int>> MAPF_handler::create_edges(size_t t, size_t a, set<uint16_t> &last_slices, set<uint16_t> &slices)
 {
     vector<vector<int>> result;
     for (const auto &element : last_slices)

@@ -13,7 +13,9 @@ int main(int argc, char **argv)
     // load problem from file - dummy problem is provided if there's no specified file
     string filename = (argc > 1) ? argv[1] : "";
     bool testing = (argc > 3) ? atoi(argv[3]) : false;
-    CMAPF problem = CMAPF(filename, testing);
+    bool exp = (argc > 4) ? atoi(argv[4]) : false;
+
+    MAPF_handler problem = MAPF_handler(filename, testing);
     // start measuring time
     auto start = chrono::high_resolution_clock::now();
     // get initial makespan (total time of plan)
@@ -25,20 +27,16 @@ int main(int argc, char **argv)
         return 42;
     }
 
-    chrono::duration<double> encoding_time;
-
     while (true)
     {
         Solver solver;
-        auto start_encoding = chrono::high_resolution_clock::now();
         problem.encode(solver);
-        auto end_encoding = chrono::high_resolution_clock::now();
-        encoding_time = encoding_time + (end_encoding - start_encoding);
 
         solver.setIncrementalMode();
-        // solver.s_Glucose_timeout = m_timeout;
+        // solver.s_Glucose_timeout = 60;
         solver.verbosity = -1;
         solver.checking_parameter = (argc > 2) ? atoi(argv[2]) : 3;
+        solver.exp = exp;
         solver.map = &problem.map;
         solver.agents = &problem.agents;
         solver.makespan = problem.time;
@@ -62,10 +60,9 @@ int main(int argc, char **argv)
                 else
                 {
                     /* Console output */
-                    cout << "Makespan: " << problem.time << "\t solve_count " << solver.solve_cnt << endl;
+                    cout << "Makespan: " << problem.time << endl;
                     cout << "Time: \t\t" << setprecision(4) << diff.count() << endl;
-                    cout << "Non-Encoding time: \t" << setprecision(4) << (diff - encoding_time).count() << endl;
-                    // problem.print(solver.my_model);
+                    problem.print(solver.my_model);
                 }
             }
 

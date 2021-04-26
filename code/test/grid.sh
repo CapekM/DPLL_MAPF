@@ -1,6 +1,6 @@
 #!/bin/bash
 
-SIZE=32x32 # 16x16
+SIZE=16x16
 
 # SMT-CBS
 out="../output/smt_cbs.csv";
@@ -19,7 +19,7 @@ do
 done
 
 # DPLL MAPF DYN
-for n in exp_16 exp_14 # exp_2
+for n in exp_2 exp_16 exp_14
 do
         out="../output/dpll_mapf_"$n".csv";
         rm $out;

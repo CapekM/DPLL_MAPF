@@ -120,8 +120,8 @@ namespace Glucose
         vector<pair<uint16_t, uint16_t>> *agents;
         uint16_t makespan = 0;
         uint16_t checking_parameter = 3;
+        bool exp = false;
         vector<vector<int>> collisions;
-        uint16_t solve_cnt = 0;
         vector<bool> my_model;
         // chrono::duration<double> check_time;
 
@@ -157,8 +157,6 @@ namespace Glucose
                         for (const auto q : decoded[tmp_agent])
                             if (p == q)
                             {
-                                // cout << "a " << a << " t " << t << " tmp " << tmp_agent << " values " << p.second << " " << q.second << endl;
-                                // cout << "Creating col on " << p.second << " => [" << map->encode(t, a, {-p.second})[0] << ", " << map->encode(t, tmp_agent, {-q.second})[0] << "]\n";
                                 vector<int> tmp = {map->encode(t, a, {-p.second})[0], map->encode(t, tmp_agent, {-q.second})[0]};
                                 collisions.push_back(tmp);
                             }
@@ -173,17 +171,7 @@ namespace Glucose
                 if (decoded[a].size() >= makespan)
                     decoded[a].push_back(make_pair(makespan, (*agents)[a].second));
             }
-            // cout << "DECODED:\n";
-            // int i = 0;
-            // for (const auto &d : decoded)
-            // {
-            //     cout << " A" << i++ << ":\t";
-            //     for (const auto p : d)
-            //     {
-            //         cout << "[" << p.first << "," << p.second << "] ";
-            //     }
-            //     cout << endl;
-            // }
+
             /* checking swaps */
             for (size_t a = 0; a < agents->size(); a++)
             {
@@ -205,13 +193,6 @@ namespace Glucose
                                     vector<int> tmp;
                                     if (t < makespan - 1)
                                     {
-                                        // cout << "a " << a << " t " << t << " tmp " << tmp_agent << endl;
-                                        // cout << "p " << p << " q " << q << endl;
-                                        // cout << "values " << decoded[a][p].second << " " << decoded[tmp_agent][q + 1].second << endl;
-                                        // cout << "values " << decoded[a][p+1].second << " " << decoded[tmp_agent][q].second << endl;
-                                        // cout << "Creating col [" << map->encode(t, a, {-decoded[a][p].second})[0] << ", " << map->encode(t, tmp_agent, {-decoded[tmp_agent][q].second})[0] << "]\n";
-                                        // cout << "Creating col [" << map->encode(t + 1, a, {-decoded[a][p + 1].second})[0] << ", " << map->encode(t + 1, tmp_agent, {-decoded[tmp_agent][q + 1].second})[0] << "]\n";
-
                                         tmp = {map->encode(t, a, {-decoded[a][p].second})[0],
                                                map->encode(t, tmp_agent, {-decoded[tmp_agent][q].second})[0],
                                                map->encode(t + 1, a, {-decoded[a][p + 1].second})[0],
@@ -232,29 +213,23 @@ namespace Glucose
             // check_time = check_time + (end - start);
         }
 
-        void add_clauses_mc(const vector<vector<int>> &v)
+        void add_clauses(const vector<vector<int>> &v)
         {
-
             for (const auto &ar : v)
             {
                 vec<Lit> lits;
                 for (const auto a : ar)
                 {
-                    // cout << a << " ";
-                    // if (a == 0)
-                    //     break;
                     int var = abs(a) - 1;
                     lits.push(mkLit(var, (a <= 0)));
                 }
                 this->addClause(lits);
-                // cout << endl;
             }
         }
 
         // Will create (¬x ∨ ¬y) for every pair from vector
-        void add_disalowing_pairs(const vector<int> &v)
+        void add_disallowing_pairs(const vector<int> &v)
         {
-            // for (vector<int>::iterator it = begin(slice);; ++it)
             for (size_t it = 0; it < v.size(); it++)
             {
                 size_t it2 = it + 1;
@@ -264,15 +239,12 @@ namespace Glucose
                 }
                 while (it2 != v.size())
                 {
-                    // cout << "add  " << v[it] << "  " << v[it2] << endl;
                     vec<Lit> lits;
                     lits.push(~mkLit(v[it]));
                     lits.push(~mkLit(v[it2]));
-                    // cout << "push size " << lits.size() << " \n";
                     this->addClause(lits);
                     ++it2;
                 }
-                // cout << "=======================\n";
             }
         }
 
@@ -779,11 +751,9 @@ namespace Glucose
         lbool status = l_Reset;
         while (status == l_Reset)
         {
-            add_clauses_mc(collisions);
+            add_clauses(collisions);
             collisions.clear();
             budgetOff();
-            assumptions.clear();
-            solve_cnt++;
             status = solve_();
         }
         return status == l_True;
