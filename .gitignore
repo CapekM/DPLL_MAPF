@@ -1,4 +1,4 @@
 *.o
 code/samples
-*output*
+code/*output*
 code/mapf
