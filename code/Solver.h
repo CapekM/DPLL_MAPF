@@ -119,7 +119,7 @@ namespace Glucose
         encode_MAP *map;
         vector<pair<uint16_t, uint16_t>> *agents;
         uint16_t makespan = 0;
-        uint16_t checking_parameter = 3;
+        double checking_parameter = 3;
         bool exp = false;
         vector<vector<int>> collisions;
         vector<bool> my_model;
@@ -130,7 +130,7 @@ namespace Glucose
             // auto start = chrono::high_resolution_clock::now();
             /* decoding */
             vector<vector<pair<uint16_t, uint16_t>>> decoded(agents->size());
-            for (int i = 0; i < size; i++) // TODO (size < max) ? size : max // todo max = max var without help var
+            for (int i = 0; i < size; i++)
             {
                 if (value(i) == l_True)
                 {
@@ -146,7 +146,6 @@ namespace Glucose
                 for (const auto p : decoded[a])
                 {
                     uint16_t t = p.first;
-                    // cout << "\tDecoded[a]size " << decoded[a].size() << endl;
                     size_t tmp_agent = a + 1;
                     if (tmp_agent == agents->size())
                     {

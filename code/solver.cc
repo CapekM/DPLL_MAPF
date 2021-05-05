@@ -54,7 +54,6 @@ OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWA
 #include "glucose/mtl/Sort.h"
 #include "glucose/core/Constants.h"
 #include "Solver.h"
-#include "SimpSolver.h"
 
 using namespace Glucose;
 using namespace std;

@@ -405,7 +405,7 @@ void MAPF_handler::encode(Glucose::Solver &solver)
         TEGS[TEGS_count++] = TEG;
     }
 
-    /* Finding chokepoints TEGs */
+    /* Finding single vertex in TEGs */
     for (size_t a = 0; a < TEGS.size(); a++)
     {
         for (size_t t = 1; t < TEGS[a].size() - 1; t++)
@@ -418,8 +418,6 @@ void MAPF_handler::encode(Glucose::Solver &solver)
                         TEGS[a_tmp][t].erase(*TEGS[a][t].begin());
                 }
             }
-            // if (TEGS[a][t].size() == 2){ // we found chokepoint in TEG -> we could create collisions here
-            // }
         }
     }
 
@@ -444,6 +442,34 @@ void MAPF_handler::encode(Glucose::Solver &solver)
             }
         }
     }
+
+    /* Adding chokepoints eagerly */
+    // for (size_t a = 0; a < TEGS.size(); a++)
+    // {
+    //     for (size_t t = 1; t < TEGS[a].size() - 1; t++)
+    //     {
+    //         if (TEGS[a][t].size() == 2) // we found chokepoint in TEG -> we could create collisions here
+    //         {
+    //             for (size_t a_tmp = 0; a_tmp < TEGS.size(); a_tmp++)
+    //             {
+    //                 vector<int> intersection;
+    //                 set_intersection(TEGS[a][t].begin(), TEGS[a][t].end(),
+    //                                  TEGS[a_tmp][t].begin(), TEGS[a_tmp][t].end(),
+    //                                  back_inserter(intersection));
+    //                 if (!intersection.empty())
+    //                 {
+    //                     vector<vector<int>> tmp;
+    //                     tmp.push_back({map.encode(t, a, intersection)[0], map.encode(t, a_tmp, intersection)[0]});
+    //                     if (intersection.size() > 1)
+    //                         tmp.push_back({map.encode(t, a, intersection)[1], map.encode(t, a_tmp, intersection)[1]});
+    //                     solver.add_clauses(tmp);
+    //                 }
+    //                 if (a - 1 == a_tmp)
+    //                     a_tmp++;
+    //             }
+    //         }
+    //     }
+    // }
 }
 
 vector<vector<int>> MAPF_handler::create_edges(size_t t, size_t a, set<uint16_t> &last_slices, set<uint16_t> &slices)

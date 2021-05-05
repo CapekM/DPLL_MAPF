@@ -10,11 +10,11 @@ using namespace Glucose;
 
 int main(int argc, char **argv)
 {
-    // load problem from file - dummy problem is provided if there's no specified file
     string filename = (argc > 1) ? argv[1] : "";
     bool testing = (argc > 3) ? atoi(argv[3]) : false;
     bool exp = (argc > 4) ? atoi(argv[4]) : false;
 
+    // load problem from file - dummy problem is provided if there's no specified file
     MAPF_handler problem = MAPF_handler(filename, testing);
     // start measuring time
     auto start = chrono::high_resolution_clock::now();
@@ -35,7 +35,7 @@ int main(int argc, char **argv)
         solver.setIncrementalMode();
         // solver.s_Glucose_timeout = 60;
         solver.verbosity = -1;
-        solver.checking_parameter = (argc > 2) ? atoi(argv[2]) : 3;
+        solver.checking_parameter = (argc > 2) ? atof(argv[2]) : 3;
         solver.exp = exp;
         solver.map = &problem.map;
         solver.agents = &problem.agents;
@@ -57,9 +57,9 @@ int main(int argc, char **argv)
                 {
                     cout << ", " << setprecision(4) << diff.count();
                 }
+                /* Console output */
                 else
                 {
-                    /* Console output */
                     cout << "Makespan: " << problem.time << endl;
                     cout << "Time: \t\t" << setprecision(4) << diff.count() << endl;
                     problem.print(solver.my_model);

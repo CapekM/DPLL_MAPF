@@ -1,6 +1,6 @@
 #!/bin/bash
 
-SIZE=16x16
+SIZE=32x32
 
 # SMT-CBS
 out="../output/smt_cbs.csv";
@@ -19,9 +19,9 @@ do
 done
 
 # DPLL MAPF DYN
-for n in exp_2 exp_16 exp_14
+for n in 1.6 1.4 2
 do
-        out="../output/dpll_mapf_"$n".csv";
+        out="../output/dpll_mapf_exp_"$n".csv";
         rm $out;
         touch $out;
         for i in {2..30..2}
@@ -31,13 +31,13 @@ do
                 do
                         # echo "Runing instance "$i".cpf"
                         inst="../samples/grids/grid_"$SIZE"_a"$i".cpf";
-                        ./mapf_$n $inst $n 1 >> $out;
+                        ./mapf $inst $n 1 1 >> $out;
                 done
                 echo >> $out
         done
 done
 
-# DPLL MAPF
+# DPLL MAPF Uniform
 for n in 3 5 10
 do
         out="../output/dpll_mapf_"$n".csv";
@@ -50,7 +50,7 @@ do
                 do
                         # echo "Runing instance "$i".cpf"
                         inst="../samples/grids/grid_"$SIZE"_a"$i".cpf";
-                        ./mapf $inst $n 1 >> $out;
+                        ./mapf $inst $n 1 0 >> $out;
                 done
                 echo >> $out
         done
