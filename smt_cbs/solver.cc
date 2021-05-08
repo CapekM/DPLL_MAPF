@@ -54,6 +54,7 @@ OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWA
 #include "glucose/mtl/Sort.h"
 #include "glucose/core/Constants.h"
 #include "Solver.h"
+#include "SimpSolver.h"
 
 using namespace Glucose;
 using namespace std;
@@ -1500,38 +1501,8 @@ lbool Solver::search(int nof_conflicts)
     bool aDecisionWasMade = false;
 
     starts++;
-    size_t cnt = 100;
-    if (!exp)
-        cnt = nVars() / checking_parameter + 1;
-
     for (;;)
     {
-        if (trail.size() > cnt)
-        {
-            if (exp)
-                cnt += cnt * checking_parameter;
-            else
-                cnt += nVars() / checking_parameter;
-            check_collisions(trail.size());
-            if (!collisions.empty())
-            {
-                // cout << "Adding col" << endl;
-                // for (const auto &c : collisions)
-                // {
-                //     cout << "[";
-                //     for (const auto &a : c)
-                //     {
-                //         if (&a == &c.back())
-                //             cout << a << "] ";
-                //         else
-                //             cout << a << ",";
-                //     }
-                // }
-                // cout << endl;
-                return l_Reset;
-            }
-        }
-
         if (decisionLevel() == 0)
         { // We import clauses FIXME: ensure that we will import clauses enventually (restart after some point)
             parallelImportUnaryClauses();
@@ -1844,6 +1815,45 @@ lbool Solver::solve_(bool do_simp, bool turn_off_simp) // Parameters are useless
     solves++;
 
     lbool status = l_Undef;
+    if (!incremental && verbosity >= 1)
+    {
+        printf("c ========================================[ MAGIC CONSTANTS ]==============================================\n");
+        printf("c | Constants are supposed to work well together :-)                                                      |\n");
+        printf("c | however, if you find better choices, please let us known...                                           |\n");
+        printf("c |-------------------------------------------------------------------------------------------------------|\n");
+        if (adaptStrategies)
+        {
+            printf("c | Adapt dynamically the solver after 100000 conflicts (restarts, reduction strategies...)               |\n");
+            printf("c |-------------------------------------------------------------------------------------------------------|\n");
+        }
+        printf("c |                                |                                |                                     |\n");
+        printf("c | - Restarts:                    | - Reduce Clause DB:            | - Minimize Asserting:               |\n");
+        if (chanseokStrategy)
+        {
+            printf("c |   * LBD Queue    : %6d      |     chanseok Strategy          |    * size < %3d                     |\n", lbdQueue.maxSize(),
+                   lbSizeMinimizingClause);
+            printf("c |   * Trail  Queue : %6d      |   * learnts size     : %6d  |    * lbd  < %3d                     |\n", trailQueue.maxSize(),
+                   firstReduceDB, lbLBDMinimizingClause);
+            printf("c |   * K            : %6.2f      |   * Bound LBD   : %6d       |                                     |\n", K, coLBDBound);
+            printf("c |   * R            : %6.2f      |   * Protected :  (lbd)< %2d     |                                     |\n", R, lbLBDFrozenClause);
+        }
+        else
+        {
+            printf("c |   * LBD Queue    : %6d      |   * First     : %6d         |    * size < %3d                     |\n", lbdQueue.maxSize(),
+                   nbclausesbeforereduce, lbSizeMinimizingClause);
+            printf("c |   * Trail  Queue : %6d      |   * Inc       : %6d         |    * lbd  < %3d                     |\n", trailQueue.maxSize(), incReduceDB,
+                   lbLBDMinimizingClause);
+            printf("c |   * K            : %6.2f      |   * Special   : %6d         |                                     |\n", K, specialIncReduceDB);
+            printf("c |   * R            : %6.2f      |   * Protected :  (lbd)< %2d     |                                     |\n", R, lbLBDFrozenClause);
+        }
+        printf("c |                                |                                |                                     |\n");
+        printf("c ==================================[ Search Statistics (every %6d conflicts) ]=========================\n", verbEveryConflicts);
+        printf("c |                                                                                                       |\n");
+
+        printf("c |          RESTARTS           |          ORIGINAL         |              LEARNT              | Progress |\n");
+        printf("c |       NB   Blocked  Avg Cfc |    Vars  Clauses Literals |   Red   Learnts    LBD2  Removed |          |\n");
+        printf("c =========================================================================================================\n");
+    }
 
     // Search:
     int curr_restarts = 0;
@@ -1851,39 +1861,37 @@ lbool Solver::solve_(bool do_simp, bool turn_off_simp) // Parameters are useless
     {
         status = search(
             luby_restart ? luby(restart_inc, curr_restarts) * luby_restart_factor : 0); // the parameter is useless in glucose, kept to allow modifications
-        if (status == l_Reset)                                                          // what if undef?
-        {
-            cancelUntil(0);
-            return l_Reset;
-        }
         if (!withinBudget())
             break;
         curr_restarts++;
     }
 
+    if (!incremental && verbosity >= 1)
+        printf("c =========================================================================================================\n");
+
+    if (certifiedUNSAT)
+    { // Want certified output
+        if (status == l_False)
+        {
+            if (vbyte)
+            {
+                write_char('a');
+                write_lit(0);
+            }
+            else
+            {
+                fprintf(certifiedOutput, "0\n");
+            }
+        }
+        fclose(certifiedOutput);
+    }
+
     if (status == l_True)
     {
-        check_collisions(nVars());
-        if (!collisions.empty())
-        {
-            cancelUntil(0);
-            return l_Reset;
-        }
         // Extend & copy model:
-        // model.growTo(nVars());
-        // for (int i = 0; i < nVars(); i++)
-        //     model[i] = value(i);
+        model.growTo(nVars());
         for (int i = 0; i < nVars(); i++)
-        {
-            if (value(i) == l_False)
-                my_model.push_back(false);
-            else // if (value(i) == l_False)
-                my_model.push_back(true);
-            // else {
-            //     cerr << "undefined model on i = " << i << endl;
-            //     exit(42);
-            // }
-        }
+            model[i] = value(i);
     }
     else if (status == l_False && conflict.size() == 0)
         ok = false;

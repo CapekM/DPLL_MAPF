@@ -66,6 +66,7 @@ using namespace std;
 #include "glucose/core/SolverStats.h"
 
 #include "map.h"
+// #include "loader.h"
 
 namespace Glucose
 {
@@ -116,104 +117,10 @@ namespace Glucose
         virtual ~Solver();
 
         // from here by Martin Capek
-        encode_MAP *map;
-        vector<pair<uint16_t, uint16_t>> *agents;
-        uint16_t makespan = 0;
-        double checking_parameter = 3;
-        bool exp = false;
-        vector<vector<int>> collisions;
         vector<bool> my_model;
-        // chrono::duration<double> check_time;
-
-        void check_collisions(int size) // assuming values are in time order
+        void add_clauses_mc(const vector<vector<int>> &v)
         {
-            // auto start = chrono::high_resolution_clock::now();
-            /* decoding */
-            vector<vector<pair<uint16_t, uint16_t>>> decoded(agents->size());
-            for (int i = 0; i < size; i++)
-            {
-                if (value(i) == l_True)
-                {
-                    decoded[map->map[i].agent].push_back(make_pair(map->map[i].time, map->map[i].vertex));
-                }
-            }
 
-            /* checking collisions */
-            for (size_t a = 0; a < agents->size(); a++)
-            // for (const auto &d : decoded)
-            {
-                // for (size_t t = 0; t < decoded[a].size(); t++)
-                for (const auto p : decoded[a])
-                {
-                    uint16_t t = p.first;
-                    size_t tmp_agent = a + 1;
-                    if (tmp_agent == agents->size())
-                    {
-                        break;
-                    }
-                    while (tmp_agent < agents->size())
-                    {
-                        for (const auto q : decoded[tmp_agent])
-                            if (p == q)
-                            {
-                                vector<int> tmp = {map->encode(t, a, {-p.second})[0], map->encode(t, tmp_agent, {-q.second})[0]};
-                                collisions.push_back(tmp);
-                            }
-                        tmp_agent++;
-                    }
-                }
-            }
-
-            /* add agents target for checking swaps */
-            for (size_t a = 0; a < agents->size(); a++)
-            {
-                if (decoded[a].size() >= makespan)
-                    decoded[a].push_back(make_pair(makespan, (*agents)[a].second));
-            }
-
-            /* checking swaps */
-            for (size_t a = 0; a < agents->size(); a++)
-            {
-                for (size_t p = 0; p < decoded[a].size() - 1; p++)
-                {
-                    uint16_t t = decoded[a][p].first;
-                    if (t + 1 == decoded[a][p + 1].first)
-                    {
-                        size_t tmp_agent = a + 1;
-                        if (tmp_agent == agents->size())
-                        {
-                            break;
-                        }
-                        while (tmp_agent < agents->size())
-                        {
-                            for (size_t q = 0; q < decoded[tmp_agent].size() - 1; q++)
-                                if (t == decoded[tmp_agent][q].first && (decoded[tmp_agent][q].first + 1 == decoded[tmp_agent][q + 1].first) && decoded[a][p].second == decoded[tmp_agent][q + 1].second && decoded[a][p + 1].second == decoded[tmp_agent][q].second)
-                                {
-                                    vector<int> tmp;
-                                    if (t < makespan - 1)
-                                    {
-                                        tmp = {map->encode(t, a, {-decoded[a][p].second})[0],
-                                               map->encode(t, tmp_agent, {-decoded[tmp_agent][q].second})[0],
-                                               map->encode(t + 1, a, {-decoded[a][p + 1].second})[0],
-                                               map->encode(t + 1, tmp_agent, {-decoded[tmp_agent][q + 1].second})[0]};
-                                    }
-                                    else // if last time forbid only last pair (destinations are not encoded)
-                                    {
-                                        tmp = {map->encode(t, a, {-decoded[a][p].second})[0], map->encode(t, tmp_agent, {-decoded[tmp_agent][q].second})[0]};
-                                    }
-                                    collisions.push_back(tmp);
-                                }
-                            tmp_agent++;
-                        }
-                    }
-                }
-            }
-            // auto end = chrono::high_resolution_clock::now();
-            // check_time = check_time + (end - start);
-        }
-
-        void add_clauses(const vector<vector<int>> &v)
-        {
             for (const auto &ar : v)
             {
                 vec<Lit> lits;
@@ -227,7 +134,7 @@ namespace Glucose
         }
 
         // Will create (¬x ∨ ¬y) for every pair from vector
-        void add_disallowing_pairs(const vector<int> &v)
+        void add_disalowing_pairs(const vector<int> &v)
         {
             for (size_t it = 0; it < v.size(); it++)
             {
@@ -246,10 +153,9 @@ namespace Glucose
                 }
             }
         }
-
         // up here by Martin Capek
 
-        /**
+     /**
      * Clone function
      */
         virtual Clone *clone() const
@@ -747,15 +653,9 @@ namespace Glucose
     // all calls to solve must return an 'lbool'. I'm not yet sure which I prefer.
     inline bool Solver::solve()
     {
-        lbool status = l_Reset;
-        while (status == l_Reset)
-        {
-            add_clauses(collisions);
-            collisions.clear();
-            budgetOff();
-            status = solve_();
-        }
-        return status == l_True;
+        budgetOff();
+        assumptions.clear();
+        return solve_() == l_True;
     }
     inline bool Solver::solve(Lit p)
     {

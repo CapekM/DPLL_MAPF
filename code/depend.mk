@@ -1,14 +1,12 @@
-/mnt/c/Users/marti/Desktop/school/DP/code/loader.o /mnt/c/Users/marti/Desktop/school/DP/code/loader.or /mnt/c/Users/marti/Desktop/school/DP/code/loader.od /mnt/c/Users/marti/Desktop/school/DP/code/loader.op: /mnt/c/Users/marti/Desktop/school/DP/code/loader.cc \
- /mnt/c/Users/marti/Desktop/school/DP/code/loader.h \
- /mnt/c/Users/marti/Desktop/school/DP/code/SimpSolver.h \
- /mnt/c/Users/marti/Desktop/school/DP/code/glucose/mtl/Queue.h \
+/mnt/c/Users/marti/Desktop/school/DP/code/main.o /mnt/c/Users/marti/Desktop/school/DP/code/main.or /mnt/c/Users/marti/Desktop/school/DP/code/main.od /mnt/c/Users/marti/Desktop/school/DP/code/main.op: /mnt/c/Users/marti/Desktop/school/DP/code/main.cc \
+ /mnt/c/Users/marti/Desktop/school/DP/code/mapf.h \
+ /mnt/c/Users/marti/Desktop/school/DP/code/Solver.h \
+ /mnt/c/Users/marti/Desktop/school/DP/code/glucose/mtl/Heap.h \
  /mnt/c/Users/marti/Desktop/school/DP/code/glucose/mtl/Vec.h \
  /mnt/c/Users/marti/Desktop/school/DP/code/glucose/mtl/IntTypes.h \
  /mnt/c/Users/marti/Desktop/school/DP/code/glucose/mtl/XAlloc.h \
- /mnt/c/Users/marti/Desktop/school/DP/code/glucose/mtl/Clone.h \
- /mnt/c/Users/marti/Desktop/school/DP/code/Solver.h \
- /mnt/c/Users/marti/Desktop/school/DP/code/glucose/mtl/Heap.h \
  /mnt/c/Users/marti/Desktop/school/DP/code/glucose/mtl/Alg.h \
+ /mnt/c/Users/marti/Desktop/school/DP/code/glucose/mtl/Clone.h \
  /mnt/c/Users/marti/Desktop/school/DP/code/glucose/utils/Options.h \
  /mnt/c/Users/marti/Desktop/school/DP/code/glucose/utils/../mtl/IntTypes.h \
  /mnt/c/Users/marti/Desktop/school/DP/code/glucose/utils/../mtl/Vec.h \
@@ -27,36 +25,6 @@
  /mnt/c/Users/marti/Desktop/school/DP/code/glucose/core/Constants.h \
  /mnt/c/Users/marti/Desktop/school/DP/code/glucose/core/SolverStats.h \
  /mnt/c/Users/marti/Desktop/school/DP/code/map.h
-/mnt/c/Users/marti/Desktop/school/DP/code/main.o /mnt/c/Users/marti/Desktop/school/DP/code/main.or /mnt/c/Users/marti/Desktop/school/DP/code/main.od /mnt/c/Users/marti/Desktop/school/DP/code/main.op: /mnt/c/Users/marti/Desktop/school/DP/code/main.cc \
- /mnt/c/Users/marti/Desktop/school/DP/code/loader.h \
- /mnt/c/Users/marti/Desktop/school/DP/code/SimpSolver.h \
- /mnt/c/Users/marti/Desktop/school/DP/code/glucose/mtl/Queue.h \
- /mnt/c/Users/marti/Desktop/school/DP/code/glucose/mtl/Vec.h \
- /mnt/c/Users/marti/Desktop/school/DP/code/glucose/mtl/IntTypes.h \
- /mnt/c/Users/marti/Desktop/school/DP/code/glucose/mtl/XAlloc.h \
- /mnt/c/Users/marti/Desktop/school/DP/code/glucose/mtl/Clone.h \
- /mnt/c/Users/marti/Desktop/school/DP/code/Solver.h \
- /mnt/c/Users/marti/Desktop/school/DP/code/glucose/mtl/Heap.h \
- /mnt/c/Users/marti/Desktop/school/DP/code/glucose/mtl/Alg.h \
- /mnt/c/Users/marti/Desktop/school/DP/code/glucose/utils/Options.h \
- /mnt/c/Users/marti/Desktop/school/DP/code/glucose/utils/../mtl/IntTypes.h \
- /mnt/c/Users/marti/Desktop/school/DP/code/glucose/utils/../mtl/Vec.h \
- /mnt/c/Users/marti/Desktop/school/DP/code/glucose/utils/ParseUtils.h \
- /mnt/c/Users/marti/Desktop/school/DP/code/glucose/core/SolverTypes.h \
- /mnt/c/Users/marti/Desktop/school/DP/code/glucose/core/../mtl/IntTypes.h \
- /mnt/c/Users/marti/Desktop/school/DP/code/glucose/core/../mtl/Alg.h \
- /mnt/c/Users/marti/Desktop/school/DP/code/glucose/core/../mtl/Vec.h \
- /mnt/c/Users/marti/Desktop/school/DP/code/glucose/core/../mtl/Map.h \
- /mnt/c/Users/marti/Desktop/school/DP/code/glucose/core/../mtl/../mtl/IntTypes.h \
- /mnt/c/Users/marti/Desktop/school/DP/code/glucose/core/../mtl/../mtl/Vec.h \
- /mnt/c/Users/marti/Desktop/school/DP/code/glucose/core/../mtl/Alloc.h \
- /mnt/c/Users/marti/Desktop/school/DP/code/glucose/core/../mtl/XAlloc.h \
- /mnt/c/Users/marti/Desktop/school/DP/code/glucose/core/../mtl/Vec.h \
- /mnt/c/Users/marti/Desktop/school/DP/code/glucose/core/BoundedQueue.h \
- /mnt/c/Users/marti/Desktop/school/DP/code/glucose/core/Constants.h \
- /mnt/c/Users/marti/Desktop/school/DP/code/glucose/core/SolverStats.h \
- /mnt/c/Users/marti/Desktop/school/DP/code/map.h \
- /mnt/c/Users/marti/Desktop/school/DP/code/mapf.h
 /mnt/c/Users/marti/Desktop/school/DP/code/solver.o /mnt/c/Users/marti/Desktop/school/DP/code/solver.or /mnt/c/Users/marti/Desktop/school/DP/code/solver.od /mnt/c/Users/marti/Desktop/school/DP/code/solver.op: /mnt/c/Users/marti/Desktop/school/DP/code/solver.cc \
  /mnt/c/Users/marti/Desktop/school/DP/code/glucose/utils/System.h \
  /mnt/c/Users/marti/Desktop/school/DP/code/glucose/utils/../mtl/IntTypes.h \
@@ -83,38 +51,6 @@
  /mnt/c/Users/marti/Desktop/school/DP/code/glucose/core/../mtl/XAlloc.h \
  /mnt/c/Users/marti/Desktop/school/DP/code/glucose/core/../mtl/Vec.h \
  /mnt/c/Users/marti/Desktop/school/DP/code/glucose/core/BoundedQueue.h \
- /mnt/c/Users/marti/Desktop/school/DP/code/glucose/core/SolverStats.h \
- /mnt/c/Users/marti/Desktop/school/DP/code/map.h \
- /mnt/c/Users/marti/Desktop/school/DP/code/SimpSolver.h \
- /mnt/c/Users/marti/Desktop/school/DP/code/glucose/mtl/Queue.h
-/mnt/c/Users/marti/Desktop/school/DP/code/SimpSolver.o /mnt/c/Users/marti/Desktop/school/DP/code/SimpSolver.or /mnt/c/Users/marti/Desktop/school/DP/code/SimpSolver.od /mnt/c/Users/marti/Desktop/school/DP/code/SimpSolver.op: /mnt/c/Users/marti/Desktop/school/DP/code/SimpSolver.cc \
- /mnt/c/Users/marti/Desktop/school/DP/code/glucose/mtl/Sort.h \
- /mnt/c/Users/marti/Desktop/school/DP/code/glucose/mtl/Vec.h \
- /mnt/c/Users/marti/Desktop/school/DP/code/glucose/mtl/IntTypes.h \
- /mnt/c/Users/marti/Desktop/school/DP/code/glucose/mtl/XAlloc.h \
- /mnt/c/Users/marti/Desktop/school/DP/code/glucose/utils/System.h \
- /mnt/c/Users/marti/Desktop/school/DP/code/glucose/utils/../mtl/IntTypes.h \
- /mnt/c/Users/marti/Desktop/school/DP/code/SimpSolver.h \
- /mnt/c/Users/marti/Desktop/school/DP/code/glucose/mtl/Queue.h \
- /mnt/c/Users/marti/Desktop/school/DP/code/glucose/mtl/Clone.h \
- /mnt/c/Users/marti/Desktop/school/DP/code/Solver.h \
- /mnt/c/Users/marti/Desktop/school/DP/code/glucose/mtl/Heap.h \
- /mnt/c/Users/marti/Desktop/school/DP/code/glucose/mtl/Alg.h \
- /mnt/c/Users/marti/Desktop/school/DP/code/glucose/utils/Options.h \
- /mnt/c/Users/marti/Desktop/school/DP/code/glucose/utils/../mtl/Vec.h \
- /mnt/c/Users/marti/Desktop/school/DP/code/glucose/utils/ParseUtils.h \
- /mnt/c/Users/marti/Desktop/school/DP/code/glucose/core/SolverTypes.h \
- /mnt/c/Users/marti/Desktop/school/DP/code/glucose/core/../mtl/IntTypes.h \
- /mnt/c/Users/marti/Desktop/school/DP/code/glucose/core/../mtl/Alg.h \
- /mnt/c/Users/marti/Desktop/school/DP/code/glucose/core/../mtl/Vec.h \
- /mnt/c/Users/marti/Desktop/school/DP/code/glucose/core/../mtl/Map.h \
- /mnt/c/Users/marti/Desktop/school/DP/code/glucose/core/../mtl/../mtl/IntTypes.h \
- /mnt/c/Users/marti/Desktop/school/DP/code/glucose/core/../mtl/../mtl/Vec.h \
- /mnt/c/Users/marti/Desktop/school/DP/code/glucose/core/../mtl/Alloc.h \
- /mnt/c/Users/marti/Desktop/school/DP/code/glucose/core/../mtl/XAlloc.h \
- /mnt/c/Users/marti/Desktop/school/DP/code/glucose/core/../mtl/Vec.h \
- /mnt/c/Users/marti/Desktop/school/DP/code/glucose/core/BoundedQueue.h \
- /mnt/c/Users/marti/Desktop/school/DP/code/glucose/core/Constants.h \
  /mnt/c/Users/marti/Desktop/school/DP/code/glucose/core/SolverStats.h \
  /mnt/c/Users/marti/Desktop/school/DP/code/map.h
 /mnt/c/Users/marti/Desktop/school/DP/code/mapf.o /mnt/c/Users/marti/Desktop/school/DP/code/mapf.or /mnt/c/Users/marti/Desktop/school/DP/code/mapf.od /mnt/c/Users/marti/Desktop/school/DP/code/mapf.op: /mnt/c/Users/marti/Desktop/school/DP/code/mapf.cc \

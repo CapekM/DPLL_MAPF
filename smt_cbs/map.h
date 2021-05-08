@@ -73,6 +73,8 @@ public:
             // my map is created by order Time, Agent, Vertex
             while (true)
             {
+                // cout << "index \t" << index << endl;
+                // cout << "map " << map[index].print() << " tmp " << tmp.print() << endl;
                 if (map[index] == tmp)
                 {
                     result.push_back(index);
@@ -133,7 +135,7 @@ public:
         }
         return result;
     }
-
+    
     vector<int> encode_one(uint16_t t, uint16_t a, const int i)
     {
         vector<int> result;
@@ -165,7 +167,7 @@ public:
         return result;
     }
 
-    friend ostream &operator<<(ostream &os, const encode_MAP &m)
+    friend ostream& operator<<(ostream& os, const encode_MAP& m)
     {
         os << "Printing MAP:\n";
         for (const auto &a : m.map)

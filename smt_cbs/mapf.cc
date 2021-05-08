@@ -11,7 +11,7 @@
 using namespace Glucose;
 using namespace std;
 
-MAPF_handler::MAPF_handler(string filename, bool testing)
+CMAPF::CMAPF(string filename, bool testing)
 {
     size_t default_length = 50;
     if (filename != "")
@@ -90,7 +90,7 @@ MAPF_handler::MAPF_handler(string filename, bool testing)
             }
             file.close();
             this->graph = graph;
-            if (!testing)
+            if (! testing)
                 cout << "file \"" << filename << "\" successfully loaded" << endl;
         }
         else
@@ -133,16 +133,16 @@ MAPF_handler::MAPF_handler(string filename, bool testing)
         // this->add_agent(4, 7);
         // this->add_agent(13, 2);
 
-        cout << "default problem" << endl;
+        cout << "Loading default problem" << endl;
     }
 }
 
-void MAPF_handler::add_agent(uint16_t from, uint16_t to)
+void CMAPF::add_agent(uint16_t from, uint16_t to)
 {
     agents.push_back(make_pair(from, to));
 }
 
-uint16_t MAPF_handler::get_shortest_path()
+uint16_t CMAPF::get_shortest_path()
 {
     uint16_t max = 0;
     for (const auto &agent : agents)
@@ -153,7 +153,7 @@ uint16_t MAPF_handler::get_shortest_path()
     return max;
 }
 
-uint16_t MAPF_handler::shortest_path(uint16_t a, uint16_t b)
+uint16_t CMAPF::shortest_path(uint16_t a, uint16_t b)
 {
     if (a == b)
     {
@@ -193,7 +193,7 @@ uint16_t MAPF_handler::shortest_path(uint16_t a, uint16_t b)
     return time;
 }
 
-set<uint16_t> MAPF_handler::expand_2(set<uint16_t> &in)
+set<uint16_t> CMAPF::expand_2(set<uint16_t> &in)
 {
     set<uint16_t> result;
     for (const auto &v : in)
@@ -209,7 +209,7 @@ set<uint16_t> MAPF_handler::expand_2(set<uint16_t> &in)
     return result;
 }
 
-set<uint16_t> MAPF_handler::expand(set<uint16_t> &in)
+set<uint16_t> CMAPF::expand(set<uint16_t> &in)
 {
     set<uint16_t> tmp = in;
     for (const auto &v : in)
@@ -225,7 +225,7 @@ set<uint16_t> MAPF_handler::expand(set<uint16_t> &in)
     return tmp;
 }
 
-vector<vector<int>> MAPF_handler::check_collisions(const vector<bool> &solver_result)
+vector<vector<int>> CMAPF::check_collisions(const vector<bool> &solver_result)
 {
     /* decoding */
     vector<vector<uint16_t>> decoded(agents.size());
@@ -252,6 +252,12 @@ vector<vector<int>> MAPF_handler::check_collisions(const vector<bool> &solver_re
             {
                 if (decoded[a][t] == decoded[tmp_agent][t])
                 {
+                    // cout << "a " << a << " t " << t << " tmp " << tmp_agent << endl;
+                    // cout << "Creating col on " << decoded[a][t] << " => [" << map.encode(t, a, {-decoded[a][t]})[0] << ", " << map.encode(t, tmp_agent, {-decoded[a][t]})[0] << "]\n";
+                    // if (map.encode(t, a, {-decoded[a][t]})[0] != map.encode3(t, a, {-decoded[a][t]})[0])
+                    // {
+                    //     cout << "!!!!!!!! ERROR !!!!!!!!! " << endl;
+                    // }
                     vector<int> tmp = {map.encode(t, a, {-decoded[a][t]})[0], map.encode(t, tmp_agent, {-decoded[tmp_agent][t]})[0]};
                     collisions.push_back(tmp);
                 }
@@ -298,7 +304,7 @@ vector<vector<int>> MAPF_handler::check_collisions(const vector<bool> &solver_re
     return collisions;
 }
 
-bool MAPF_handler::check_result(const vector<bool> &result)
+bool CMAPF::check_result(const vector<bool> &result)
 {
     vector<vector<uint16_t>> decoded(agents.size());
 
@@ -316,7 +322,7 @@ bool MAPF_handler::check_result(const vector<bool> &result)
         {
             if (!graph[decoded[a][t] - 1][decoded[a][t - 1] - 1]) // graph consistency
             {
-                cerr << "consistency " << decoded[a][t] - 1 << " " << decoded[a][t - 1] - 1 << "\n";
+                cout << "consistency " << decoded[a][t] - 1 << " " << decoded[a][t - 1] - 1 << "\n";
                 return true;
             }
             size_t tmp_agent = a + 1;
@@ -341,9 +347,14 @@ bool MAPF_handler::check_result(const vector<bool> &result)
     return false;
 }
 
-void MAPF_handler::print(const vector<bool> &result)
+void CMAPF::print(const vector<bool> &result)
 {
     vector<vector<uint16_t>> decoded(agents.size());
+    // for (const auto &d : decoded) // if time was needed
+    // {
+    //     d.resize(time);
+    // }
+
     for (size_t i = 0; i < result.size(); i++)
     {
         if (result[i])
@@ -365,9 +376,9 @@ void MAPF_handler::print(const vector<bool> &result)
     }
 }
 
-void MAPF_handler::encode(Glucose::Solver &solver)
+void CMAPF::encode(Glucose::Solver &solver)
 {
-    map.map.clear();                                   // delete previous mapping if reapeted encoding
+    map.map.clear(); // delete previous mapping if reapeted encoding
     vector<vector<set<uint16_t>>> TEGS(agents.size()); // TEGS[agent][time][vertex]
     uint16_t TEGS_count = 0;
 
@@ -403,29 +414,61 @@ void MAPF_handler::encode(Glucose::Solver &solver)
         }
 
         TEGS[TEGS_count++] = TEG;
+        /* Print */
+        // cout << "=== TEG  for agent: " << agent.first + 1 << endl;
+        // for (int i = 0; i < TEG.size(); i++)
+        // {
+        //     for (const auto &out : TEG[i])
+        //     {
+        //         cout << out + 1 << " ";
+        //     }
+        //     cout << endl;
+        // }
     }
 
-    /* Finding single vertex in TEGs */
-    for (size_t a = 0; a < TEGS.size(); a++)
+        /* Printing TEGs */
+    // cout << "TEGS:" << endl;
+    // for (const auto &TEG : TEGS)
+    // {
+    //     cout << "=== TEG  for agent: " << endl;
+    //     for (int i = 0; i < TEG.size(); i++)
+    //     {
+    //         for (const auto &out : TEG[i])
+    //         {
+    //             cout << out + 1 << " ";
+    //         }
+    //         cout << endl;
+    //     }
+    // }
+    // cout << "=========================\n";
+
+
+        /* Finding chokepoints TEGs */
+    for (int a = 0; a < TEGS.size(); a++)
     {
-        for (size_t t = 1; t < TEGS[a].size() - 1; t++)
+        for (int t = 1; t < TEGS[a].size()-1; t++)
         {
-            if (TEGS[a][t].size() < 2)
-            { // delete this vertex from other TEGs
-                for (size_t a_tmp = 0; a_tmp < TEGS.size(); a_tmp++)
-                {
-                    if (a != a_tmp)
+            if (TEGS[a][t].size() < 2){ // delete this vertex from other TEGs
+                for (int a_tmp = 0; a_tmp < TEGS.size(); a_tmp++){
+                    if(a != a_tmp)
                         TEGS[a_tmp][t].erase(*TEGS[a][t].begin());
+                        
                 }
+
             }
+            // if (TEGS[a][t].size() == 2){ // we found chokepoint in TEG -> we could create collisions here
+            // }
         }
     }
 
+
+    // size_t literals_size = 0;
     for (size_t t = 0; t < time; t++)
     {
         for (size_t a = 0; a < TEGS.size(); a++) // for each agent's TEG
         {
             map.add(t, a, TEGS[a][t]);
+            // literals_size += TEGS[a][t].size();
             for (size_t i = 0; i < TEGS[a][t].size(); i++)
             {
                 solver.newVar();
@@ -433,46 +476,24 @@ void MAPF_handler::encode(Glucose::Solver &solver)
             /* Create, Encode and Add rules */
             if (TEGS[a][t].size() == 1) // special case if there is just one vertex in time slice
             {
-                solver.add_clauses({map.encode_one(t, a, *TEGS[a][t].begin())});
+                solver.add_clauses_mc({map.encode_one(t, a, *TEGS[a][t].begin())});
             }
             else
             {
-                solver.add_disallowing_pairs(map.encode_set(t, a, TEGS[a][t]));
-                solver.add_clauses(create_edges(t, a, TEGS[a][t - 1], TEGS[a][t]));
+                // solver.add_clauses_mc(map.encode_v(t, a, disalowing_pairs(TEGS[a][t])));
+                solver.add_disalowing_pairs(map.encode_set(t, a, TEGS[a][t]));
+                solver.add_clauses_mc(create_edges(t, a, TEGS[a][t - 1], TEGS[a][t]));
             }
         }
     }
 
-    /* Adding chokepoints eagerly */
-    // for (size_t a = 0; a < TEGS.size(); a++)
-    // {
-    //     for (size_t t = 1; t < TEGS[a].size() - 1; t++)
-    //     {
-    //         if (TEGS[a][t].size() == 2) // we found chokepoint in TEG -> we could create collisions here
-    //         {
-    //             for (size_t a_tmp = 0; a_tmp < TEGS.size(); a_tmp++)
-    //             {
-    //                 vector<int> intersection;
-    //                 set_intersection(TEGS[a][t].begin(), TEGS[a][t].end(),
-    //                                  TEGS[a_tmp][t].begin(), TEGS[a_tmp][t].end(),
-    //                                  back_inserter(intersection));
-    //                 if (!intersection.empty())
-    //                 {
-    //                     vector<vector<int>> tmp;
-    //                     tmp.push_back({map.encode(t, a, intersection)[0], map.encode(t, a_tmp, intersection)[0]});
-    //                     if (intersection.size() > 1)
-    //                         tmp.push_back({map.encode(t, a, intersection)[1], map.encode(t, a_tmp, intersection)[1]});
-    //                     solver.add_clauses(tmp);
-    //                 }
-    //                 if (a - 1 == a_tmp)
-    //                     a_tmp++;
-    //             }
-    //         }
-    //     }
-    // }
+    // cout << map << endl;
+    // result.resize(map.map.size());
+    // result.print();
+    // return result;
 }
 
-vector<vector<int>> MAPF_handler::create_edges(size_t t, size_t a, set<uint16_t> &last_slices, set<uint16_t> &slices)
+vector<vector<int>> CMAPF::create_edges(size_t t, size_t a, set<uint16_t> &last_slices, set<uint16_t> &slices)
 {
     vector<vector<int>> result;
     for (const auto &element : last_slices)
@@ -496,3 +517,25 @@ vector<vector<int>> MAPF_handler::create_edges(size_t t, size_t a, set<uint16_t>
     }
     return result;
 }
+
+// vector<vector<int>> CMAPF::disalowing_pairs(set<uint16_t> &slice)
+// {
+//     vector<vector<int>> result;
+//     for (set<uint16_t>::iterator it = begin(slice);; ++it)
+//     {
+//         set<uint16_t>::iterator it2 = it;
+//         it2++;
+//         if (it2 == end(slice))
+//         {
+//             break;
+//         }
+//         while (it2 != end(slice))
+//         {
+//             result.push_back({-*it, -*it2});
+//             // cout << "dis  " << *it << "  " << *it2 << endl;
+//             it2++;
+//         }
+//         // cout << "=======================\n";
+//     }
+//     return result;
+// }
