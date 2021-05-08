@@ -1,6 +1,6 @@
 #!/bin/bash
 
-SIZE=32x32
+SIZE=16x16 # 32x32
 
 # SMT-CBS
 out="../output/smt_cbs.csv";

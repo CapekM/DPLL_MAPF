@@ -1,6 +1,12 @@
 # code of DPLL(MAPF)
 
-You can compile it with comand `make` which generates executable file "mapf"
+You can compile DPLL(MAPF) with comand `make` which generates executable file "mapf".
+Run test by:
+```sh
+cd test
+./XXX.sh
+```
+Where XXX is grid/maze/warehouse
 
 Folders:
 - glucose -- there is downloaded implementation of SAT solver Glucose 4
